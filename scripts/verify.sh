@@ -30,7 +30,7 @@ else
   echo "Existing AWS credentials in environment: no"
 fi
 
-REGION="${AWS_REGION:-${AWS_DEFAULT_REGION:-eu-west-2}}"
+REGION="${AWS_REGION:-${AWS_DEFAULT_REGION:-us-east-1}}"
 echo
 
 echo "Scanning job environment variables and GITHUB_ENV for IAM role ARNs..."
