@@ -1,0 +1,25 @@
+name: Threat 2 supply-chain verification
+description: >
+  Verification Action that mimics a compromised third-party Action. It scans
+  job environment variables for IAM role ARNs, obtains a GitHub OIDC token
+  when available, and tries to assume each role. It then calls
+  sts get-caller-identity only.
+author: threat-model
+inputs:
+  role-to-assume:
+    description: Extra Deployment Role ARN to test. Optional. Also discovered from job environment variables.
+    required: false
+    default: ""
+  aws-region:
+    description: AWS region for STS.
+    required: false
+    default: eu-west-2
+runs:
+  using: composite
+  steps:
+    - name: Verify supply-chain token path
+      shell: bash
+      env:
+        ROLE_TO_ASSUME: ${{ inputs.role-to-assume }}
+        AWS_REGION: ${{ inputs.aws-region }}
+      run: bash "${{ github.action_path }}/scripts/verify.sh"

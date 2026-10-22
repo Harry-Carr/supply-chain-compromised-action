@@ -1,0 +1,43 @@
+# Copy into .github/workflows/ in a repository you control.
+# Replace the region. Run with workflow_dispatch.
+
+name: Test supply-chain token path
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  # Path A: compromised Action runs first, finds role ARNs in env, exchanges OIDC.
+  oidc-theft-before-assume:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compromised Action (OIDC theft)
+        uses: Harry-Carr/supply-chain-compromised-action@main
+        with:
+          aws-region: {region}
+
+  # Path B: legitimate assume first. Compromised Action reuses env credentials
+  # and scans the job environment for other role ARNs.
+  credential-reuse-after-assume:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::{accountId}:role/{roleName}
+          aws-region: {region}
+
+      - name: Compromised Action (credential reuse)
+        uses: Harry-Carr/supply-chain-compromised-action@main
+        with:
+          aws-region: {region}
