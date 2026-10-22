@@ -10,10 +10,6 @@ inputs:
     description: Extra Deployment Role ARN to test. Optional. Also discovered from job environment variables.
     required: false
     default: ""
-  aws-region:
-    description: AWS region for STS.
-    required: false
-    default: eu-west-2
 runs:
   using: composite
   steps:
@@ -21,5 +17,4 @@ runs:
       shell: bash
       env:
         ROLE_TO_ASSUME: ${{ inputs.role-to-assume }}
-        AWS_REGION: ${{ inputs.aws-region }}
       run: bash "${{ github.action_path }}/scripts/verify.sh"

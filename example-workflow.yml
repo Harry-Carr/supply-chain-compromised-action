@@ -1,5 +1,5 @@
 # Copy into .github/workflows/ in a repository you control.
-# Replace the region. Run with workflow_dispatch.
+# Replace the role ARN and region on configure-aws-credentials only.
 
 name: Test supply-chain token path
 
@@ -20,8 +20,6 @@ jobs:
 
       - name: Compromised Action (OIDC theft)
         uses: Harry-Carr/supply-chain-compromised-action@main
-        with:
-          aws-region: {region}
 
   # Path B: legitimate assume first. Compromised Action reuses env credentials
   # and scans the job environment for other role ARNs.
@@ -39,5 +37,3 @@ jobs:
 
       - name: Compromised Action (credential reuse)
         uses: Harry-Carr/supply-chain-compromised-action@main
-        with:
-          aws-region: {region}
